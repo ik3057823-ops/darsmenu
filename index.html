@@ -3,256 +3,293 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dive Deep — Retrieval Practice</title>
+  <title>Lesson 1: Retrieval Practice and Its Importance</title>
   <style>
     :root{
-      --font: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      --text:#111; --muted:#5f6368; --border:#e6e6e6; --bg:#ffffff;
-      --split-left: 30vw; /* default split (menu) width */
+      --text:#111;
+      --muted:#5f6368;
+      --border:#e6e6e6;
+      --bg:#ffffff;            /* user preference: white background */
+      --panel:#ffffff;
+      --soft:#fbf8f5;          /* soft section background */
+      --pill:#f3f4f6;
+      --accent:#111;
+      --radius:18px;
+      --shadow:0 10px 25px rgba(0,0,0,.06);
     }
-    /* Base */
-    html,body{height:100%}
     *{box-sizing:border-box}
-    html, body, h1, h2, h3, p, ul, li, a, button, input, select, textarea, figcaption { font-family: var(--font); }
-    body{margin:0; color:var(--text); background:var(--bg); font-size:16px; line-height:1.55}
-    a{color:inherit; text-decoration:none}
-    button{font:inherit}
-
-    /* Layout wrappers */
-    .viewport{min-height:100dvh; display:flex; flex-direction:column; background:var(--bg)}
-    .wrap{max-width:860px; margin:0 auto; width:100%; padding:0 28px}
-    .content{max-width:860px; margin:0 auto; padding:0 28px}
-
-    /* Sticky header */
-    .pv-header{position:sticky; top:0; display:flex; align-items:center; justify-content:space-between; gap:12px; background:rgba(255,255,255,.9); -webkit-backdrop-filter:saturate(1.2) blur(4px); backdrop-filter:saturate(1.2) blur(4px); padding:18px 0; border-bottom:1px solid var(--border); z-index:50}
-    .menu-btn{display:inline-flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--border); border-radius:999px; padding:8px 14px; font-weight:600; box-shadow:0 3px 10px rgba(0,0,0,.03); color:var(--text)}
-    .menu-btn svg{width:18px; height:18px}
-
-    /* Typography & media */
-    h1{margin:12px 0 6px; font-size:clamp(26px,4.2vw,40px); line-height:1.1; letter-spacing:-.01em; font-weight:700}
-    .subtitle{color:var(--muted); margin:0 0 18px}
-    .content h2{margin:18px 0 8px; font-size:20px; font-weight:700}
-    .content p{margin:0 0 10px}
-    .content ul{margin:0 0 8px 20px}
-    figure.media{margin:12px 0; padding:14px 0}
-    figure.media img{width:100%; height:auto; display:block; border-radius:14px; border:1px solid var(--border); box-shadow:0 3px 12px rgba(0,0,0,.03); cursor:zoom-in}
-    figure.media figcaption{color:var(--muted); font-size:14px; margin:6px 0 2px; line-height:1.35}
-    /* Flow rhythm */
-    .content > * + *{ margin-top:14px }
-    figure.media + *{ margin-top:12px }
-
-    /* Lightbox */
-    .lightbox{position:fixed; inset:0; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; padding:24px; z-index:999}
-    .lightbox.open{display:flex}
-    .lightbox img{max-width:min(92vw,1200px); max-height:90vh; border-radius:14px; border:1px solid var(--border); box-shadow:0 10px 30px rgba(0,0,0,.4); background:#000}
-
-    /* Bottom Up/Down navigation */
-    .pv-nav{position:fixed; left:50%; transform:translateX(-50%); bottom:24px; display:flex; gap:18px; z-index:20}
-    .iconbtn{display:inline-grid; place-items:center; width:80px; height:80px; border:1px solid var(--text); border-radius:16px; background:var(--text); box-shadow:0 6px 18px rgba(0,0,0,.16); cursor:pointer; color:#fff; -webkit-tap-highlight-color: transparent; touch-action:manipulation}
-    .iconbtn svg{width:36px; height:36px; stroke:currentColor}
-    .iconbtn:hover{filter:brightness(1.05)}
-
-    /* 30/70 split view (Menu | Content) */
-    .split-left{display:none}
-    body.split-open .split-left{display:flex; flex-direction:column; position:fixed; z-index:60; left:0; top:0; bottom:0; width:var(--split-left); max-width:var(--split-left); background:#fff; border-right:1px solid var(--border)}
-    body.split-open .split-left iframe{flex:1; width:100%; height:100%; border:0}
-    body.split-open .viewport{position:fixed; left:var(--split-left); right:0; top:0; bottom:0; overflow:auto; margin:0; height:auto; background:var(--bg)}
-    /* Make inner containers use full right-pane width in split */
-    body.split-open .wrap, body.split-open .content{max-width:none; width:100%; padding-left:20px; padding-right:20px}
-    /* Center buttons in right pane while split */
-    body.split-open .pv-nav{left:calc(var(--split-left) + (100vw - var(--split-left))/2); transform:translateX(-50%)}
-
-    /* Resizer */
-    .split-resizer{display:none}
-    body.split-open .split-resizer{display:block; position:fixed; top:0; bottom:0; left:var(--split-left); width:10px; margin-left:-5px; cursor:col-resize; z-index:70; background:transparent}
-    body.split-open .split-resizer::before{content:""; position:absolute; top:0; bottom:0; left:50%; width:1px; background:var(--border); transform:translateX(-50%)}
-    body.split-open.resizing .split-left iframe{pointer-events:none}
-
-    /* Accessibility */
-    :focus-visible{outline:2px solid var(--text); outline-offset:2px}
-    .menu-btn:focus-visible,.iconbtn:focus-visible{outline:2px solid var(--text); outline-offset:2px}
-
-    /* Mobile */
-    @media (max-width:760px){
-      .wrap,.content{padding:0 16px}
-      .iconbtn{width:96px; height:96px; border-radius:18px}
-      .iconbtn svg{width:44px; height:44px}
-      /* Stack 50/50 vertically on mobile for usability */
-      body.split-open .split-left{width:100vw; height:50vh}
-      body.split-open .viewport{left:0; top:50vh; right:0; bottom:0}
-      body.split-open .pv-nav{left:50%; transform:translateX(-50%)}
-      .split-resizer{display:none !important}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font:16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:var(--bg);
     }
+
+    .wrap{
+      max-width: 860px;
+      margin: 48px auto 140px;
+      padding: 0 24px;
+      transition:transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s ease, filter .3s ease;
+    }
+
+    /* Hero card */
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 0;
+      background:var(--panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      border:1px solid var(--border);
+    }
+    .hero-left{padding:52px 56px}
+    h1{
+      margin:0 0 6px;
+      font-size: clamp(26px, 4.2vw, 40px);
+      line-height:1.1;
+      letter-spacing:-.01em;
+    }
+    .hero-right{
+      min-height:220px;
+      background:
+        radial-gradient(#f2c7b2 22%, transparent 24%) 0 0/120px 120px,
+        radial-gradient(#f2c7b2 22%, transparent 24%) 60px 60px/120px 120px,
+        radial-gradient(#b9dfe6 22%, transparent 24%) 0 60px/120px 120px,
+        radial-gradient(#b9dfe6 22%, transparent 24%) 60px 0/120px 120px,
+        conic-gradient(from 45deg at 25% 25%, #f8e0b3 0 25%, transparent 0 100%),
+        conic-gradient(from -45deg at 75% 75%, #f8e0b3 0 25%, transparent 0 100%),
+        repeating-linear-gradient(90deg, transparent 0 118px, #ffffff 118px 120px);
+      opacity:.95;
+    }
+
+    /* Summary + CTA */
+    .summary{
+      background:var(--soft);
+      border-radius: var(--radius);
+      border:1px solid var(--border);
+      margin-top:22px;
+      padding:28px;
+    }
+
+    /* Learn sections */
+    .learn{background:var(--soft); border:1px solid var(--border); border-radius: var(--radius); padding:30px; margin-top:18px}
+    .learn h2{font-size:18px; font-style:italic; margin:0 0 12px; color:var(--muted)}
+    .learn p{margin:0 0 18px}
+
+    .list{display:flex; flex-direction:column; gap:12px}
+
+    .item{
+      display:flex; align-items:center; justify-content:space-between;
+      background:#fff; border:1px solid var(--border);
+      border-radius:14px; padding:14px 16px; box-shadow:0 3px 10px rgba(0,0,0,.03);
+      cursor:pointer;
+    }
+    .left{display:flex; align-items:center; gap:12px}
+    .icon{
+      width:36px; height:36px; border-radius:10px; background:var(--pill);
+      display:grid; place-items:center; border:1px solid var(--border);
+    }
+    .title{font-weight:600}
+
+    .pill{font-size:14px; background:var(--pill); padding:6px 10px; border:1px solid var(--border); border-radius:999px; white-space:nowrap; display:inline-flex; align-items:center; justify-content:center; line-height:1}
+    .pill svg{width:16px;height:16px}
+
+    .item.completed .title{opacity:.8}
+    /* Completed pill becomes a full circular badge */
+    .item.completed .pill{width:28px;height:28px;padding:0;border-radius:50%;background:var(--text);border-color:var(--text)}
+    .pill svg{width:14px;height:14px}
+
+    @media (max-width: 760px){
+      .hero{grid-template-columns:1fr}
+      .hero-right{order:-1; min-height:160px}
+      .hero-left{padding:32px 26px}
+    }
+
+    /* Start button */
+    .start{display:inline-flex;align-items:center;gap:12px;background:var(--accent);color:#fff;border:1px solid var(--accent);border-radius:12px;padding:12px 18px;margin-top:16px;box-shadow:0 3px 10px rgba(0,0,0,.08);font-weight:600;cursor:pointer}
+    .start svg{width:18px;height:18px}
+
+    /* Back button fixed (stays put when folding) */
+    .backwrap{padding:18px 0}
+    .back{display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);border-radius:999px;padding:8px 14px;font-weight:600;box-shadow:0 3px 10px rgba(0,0,0,.03);text-decoration:none;color:var(--text)}
+    .back svg{width:18px;height:18px}
+
+    .spacer{height:220px}
+
+    /* CTA row with progress and time */
+    .cta-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:8px}
+    .progress{display:flex;align-items:center;gap:10px}
+    .progress-bar{width:220px;height:6px;background:var(--pill);border:1px solid var(--border);border-radius:999px;overflow:hidden}
+    .progress-fill{height:100%;width:0%;background:var(--accent)}
+    .pct{color:var(--muted);font-weight:600;font-size:14px}
+    .pill.time{display:inline-flex;align-items:center;gap:8px}
+    .cta-right{margin-left:auto;display:flex;align-items:center;gap:14px}
   </style>
 </head>
 <body>
-  <!-- Split menu pane (hidden until Menu clicked) -->
-  <aside class="split-left" aria-label="Course menu (split view)">
-    <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 12px; border-bottom:1px solid var(--border)">
-      <strong>Menu</strong>
-      <button id="splitClose" aria-label="Close split view" style="display:inline-grid; place-items:center; width:36px; height:36px; border:1px solid var(--border); border-radius:10px; background:#fff; cursor:pointer">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      </button>
-    </div>
-    <iframe id="splitIframe" title="Course navigation" src="https://ik3057823-ops.github.io/darsmenu/"></iframe>
-  </aside>
-  <div id="splitResizer" class="split-resizer" aria-hidden="true"></div>
-
-  <!-- Main content pane -->
-  <div class="viewport">
-    <header class="wrap pv-header">
-      <a href="#" id="menuBtn" class="menu-btn" aria-expanded="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></svg>
-        <span>Menu</span>
+  <main class="wrap">
+    <div class="backwrap">
+      <a href="#" class="back" onclick="history.back(); return false;" aria-label="Go back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        <span>Back</span>
       </a>
-      <div style="flex:1"></div>
-    </header>
+    </div>
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="lesson-title">
+      <div class="hero-left">
+        <h1 id="lesson-title">Lesson 1: Retrieval<br/>Practice and Its<br/>Importance</h1>
+      </div>
+      <div class="hero-right" aria-hidden="true"></div>
+    </section>
 
-    <main class="wrap" aria-labelledby="title">
-      <section class="content">
-        <h1 id="title">Dive Deep</h1>
-        <p class="subtitle">Retrieval Practice — principles, benefits, and classroom strategies</p>
+    <!-- Summary & CTA -->
+    <section class="summary">
+      <p>
+        Retrieval practice is a powerful learning strategy where learners actively recall information from memory, significantly enhancing retention and transfer, making it a crucial tool for instructional designers to optimize educational outcomes.
+      </p>
+      <div class="cta-row">
+        <button class="start" type="button" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})" aria-label="Start lesson and jump to menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
+          <span>Start</span>
+        </button>
+        <div class="cta-right">
+          <div class="progress" aria-label="Lesson progress">
+            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="progress-fill" style="width:0%"></div>
+            </div>
+            <span class="pct">0%</span>
+          </div>
+          <div class="pill time" aria-label="Estimated time 35 minutes">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            <span>35 min</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <h2>What is Retrieval Practice?</h2>
-        <p>Retrieval practice is the act of deliberately recalling information from memory—without looking at notes or the text. This effortful recall strengthens memory traces, promotes durable learning, and helps learners identify gaps.</p>
-        <figure class="media">
-          <img loading="lazy" src="https://raw.githubusercontent.com/ik3057823-ops/images-5/refs/heads/main/children-3708586_1280.jpg" alt="Learner recalling key concepts from memory" />
-          <figcaption>Effortful recall strengthens memory more than re‑reading.</figcaption>
-        </figure>
+    <!-- Part I -->
+    <section id="menu" class="learn">
+      <h2>Part I</h2>
+      <p>Start exploring retrieval practice to boost learning power now.</p>
+      <div class="list" role="list">
+        <!-- Item 1 -->
+        <div class="item" role="listitem">
+          <div class="left">
+            <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg></div>
+            <div class="title">Deep Dive</div>
+          </div>
+          <div class="pill" aria-label="ten minutes">10 min</div>
+        </div>
+        <!-- Item 2 -->
+        <div class="item" role="listitem">
+          <div class="left">
+            <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l6 3-6 3z"/></svg></div>
+            <div class="title">Podcast Episode</div>
+          </div>
+          <div class="pill" aria-label="seven minutes">7 min</div>
+        </div>
+        <!-- Item 3 -->
+        <div class="item" role="listitem">
+          <div class="left">
+            <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4"/><path d="M7 9v6"/><path d="M17 9v6"/><path d="M20 10v4"/><path d="M7 12h10"/></svg></div>
+            <div class="title">Key Takeaways</div>
+          </div>
+          <div class="pill" aria-label="two minutes">2 min</div>
+        </div>
+      </div>
+    </section>
 
-        <h2>Why It Works</h2>
-        <p>Three mechanisms explain the impact of retrieval practice:</p>
-        <ul>
-          <li><strong>Strengthening effect:</strong> Each successful recall attempt consolidates learning and makes future retrieval easier.</li>
-          <li><strong>Diagnostic value:</strong> It reveals what has been learned and what still needs attention, supporting targeted study.</li>
-          <li><strong>Transfer & application:</strong> Practicing recall in varied contexts builds flexible knowledge usable in new situations.</li>
-        </ul>
-        <figure class="media">
-          <img loading="lazy" src="https://raw.githubusercontent.com/ik3057823-ops/images-5/refs/heads/main/children-3708586_1280.jpg" alt="Diagram illustrating spacing and interleaving" />
-          <figcaption>Spacing and interleaving compound the benefits of retrieval.</figcaption>
-        </figure>
+    <!-- Part II -->
+    <section id="menu-2" class="learn" style="margin-top:22px">
+      <h2>Part II</h2>
+      <p>Keep going with advanced applications and practice.</p>
+      <div class="list" role="list">
+        <!-- Item A -->
+        <div class="item" role="listitem">
+          <div class="left">
+            <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h10l6 6v10H4z"/><path d="M14 4v6h6"/></svg></div>
+            <div class="title">Design Tips</div>
+          </div>
+          <div class="pill" aria-label="twelve minutes">12 min</div>
+        </div>
+        <!-- Item B -->
+        <div class="item" role="listitem">
+          <div class="left">
+            <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l6 3-6 3z"/></svg></div>
+            <div class="title">Video Walkthrough</div>
+          </div>
+          <div class="pill" aria-label="nine minutes">9 min</div>
+        </div>
+        <!-- Item C -->
+        <div class="item" role="listitem">
+          <div class="left">
+            <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4"/><path d="M7 9v6"/><path d="M17 9v6"/><path d="M20 10v4"/><path d="M7 12h10"/></svg></div>
+            <div class="title">Practice Exercises</div>
+          </div>
+          <div class="pill" aria-label="eight minutes">8 min</div>
+        </div>
+        <!-- Item D -->
+        <div class="item" role="listitem">
+          <div class="left">
+            <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12v20l-6-3-6 3z"/><path d="M9 7h6"/><path d="M9 11h6"/></svg></div>
+            <div class="title">Summary & Next Steps</div>
+          </div>
+          <div class="pill" aria-label="five minutes">5 min</div>
+        </div>
+      </div>
+    </section>
 
-        <h2>How to Use It</h2>
-        <ul>
-          <li>Begin lessons with a 2–3 minute recall warm‑up about the previous topic.</li>
-          <li>Use short, low‑stakes quizzes and exit tickets to reinforce key ideas.</li>
-          <li>Interleave topics and space practice across days for compounding gains.</li>
-          <li>Encourage students to create and answer their own practice questions.</li>
-          <li>Cycle back to prior units with brief retrieval checks to combat forgetting.</li>
-        </ul>
-
-        <h2>Summary</h2>
-        <p>To make retrieval sustainable, keep tasks short and predictable: one or two prompts at the same point in each lesson. Rotate formats—free recall, one‑minute summaries, or two key terms explained in your own words—to maintain desirable difficulty without adding grading load.</p>
-        <p>Finally, close the loop. After learners attempt recall, reveal concise model answers or success criteria, then invite them to self‑correct. This immediate comparison transforms mistakes into feedback, building confidence and reinforcing the habit of recalling before re‑reading.</p>
-      </section>
-      <div class="page-spacer" aria-hidden="true" style="height:160px"></div>
-    </main>
-  </div>
-
-  <!-- Bottom-centered navigation (scrolls to blocks) -->
-  <nav class="pv-nav" aria-label="Page navigation">
-    <button class="iconbtn" id="btn-up" aria-label="Previous block">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5l-6 6h12z"/></svg>
-    </button>
-    <button class="iconbtn" id="btn-down" aria-label="Next block">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l6-6H6z"/></svg>
-    </button>
-  </nav>
-
-  <!-- Lightbox -->
-  <div id="lightbox" class="lightbox" aria-hidden="true" role="dialog" aria-label="Image preview"><img alt="Preview" /></div>
+    <div class="spacer" aria-hidden="true"></div>
+  </main>
 
   <script>
   (function(){
-    // ---- Up/Down buttons scroll between content blocks ----
-    const targets = Array.from(document.querySelectorAll([
-      '.content > h1',
-      '.content > h2',
-      '.content > p',
-      '.content > ul',
-      '.content > ol',
-      '.content > figure.media'
-    ].join(',')));
-    const up = document.getElementById('btn-up');
-    const down = document.getElementById('btn-down');
-    let idx = 0;
+    // Checklist / Progress only (reverted)
+    const items = Array.from(document.querySelectorAll('.list .item'));
+    const bar = document.querySelector('.progress-fill');
+    const barWrap = document.querySelector('.progress-bar');
+    const pctLabel = document.querySelector('.pct');
 
-    function go(i){
-      if(!targets.length) return;
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      idx = Math.max(0, Math.min(targets.length-1, i));
-      targets[idx].scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'});
-    }
-
-    up?.addEventListener('click', ()=> go(idx-1));
-    down?.addEventListener('click', ()=> go(idx+1));
-
-    if(targets.length){
-      const io = new IntersectionObserver((entries)=>{
-        let best=null, bestRatio=0;
-        for(const e of entries){ if(e.isIntersecting && e.intersectionRatio>bestRatio){ best=e; bestRatio=e.intersectionRatio; } }
-        if(best){ idx = targets.indexOf(best.target); }
-      }, {threshold:[0.5]});
-      targets.forEach(el=> io.observe(el));
-    } else {
-      document.querySelector('.pv-nav')?.setAttribute('style','display:none');
-    }
-
-    // ---- Lightbox ----
-    const overlay = document.getElementById('lightbox');
-    const overlayImg = overlay?.querySelector('img');
-    function openLB(src, alt){ if(!overlay||!overlayImg) return; overlayImg.src=src; overlayImg.alt=alt||'Preview'; overlay.classList.add('open'); overlay.setAttribute('aria-hidden','false'); }
-    function closeLB(){ if(!overlay) return; overlay.classList.remove('open'); overlay.setAttribute('aria-hidden','true'); }
-    document.querySelectorAll('figure.media img').forEach(img=>{ img.addEventListener('click', ()=> openLB(img.src, img.alt)); });
-    overlay?.addEventListener('click', closeLB);
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLB(); });
-
-    // ---- 30/70 split toggle ----
-    const menuBtn = document.getElementById('menuBtn');
-    const splitClose = document.getElementById('splitClose');
-    menuBtn?.addEventListener('click', (e)=>{
-      e.preventDefault();
-      document.body.classList.add('split-open');
-      menuBtn.setAttribute('aria-expanded','true');
-    });
-    splitClose?.addEventListener('click', ()=>{
-      document.body.classList.remove('split-open');
-      menuBtn?.setAttribute('aria-expanded','false');
+    items.forEach(it=>{
+      const pill = it.querySelector('.pill');
+      if(!pill) return;
+      pill.dataset.minutes = pill.textContent.trim();
+      it.setAttribute('tabindex','0');
+      it.setAttribute('role','button');
+      it.addEventListener('click', ()=> toggle(it));
+      it.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); toggle(it);} });
     });
 
-    // ---- Resizable split (desktop) ----
-    const resizer = document.getElementById('splitResizer');
-    let dragging = false;
-
-    function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
-    function setSplitFromClientX(x){
-      const vw = Math.max(1, window.innerWidth);
-      const pct = clamp((x / vw) * 100, 20, 60); // allow 20%..60%
-      document.documentElement.style.setProperty('--split-left', pct + 'vw');
+    function updateProgress(){
+      const total = items.length || 1;
+      const done = items.filter(i=>i.classList.contains('completed')).length;
+      const pct = Math.round((done/total)*100);
+      if(bar){ bar.style.width = pct + '%'; }
+      if(barWrap){ barWrap.setAttribute('aria-valuenow', String(pct)); }
+      if(pctLabel){ pctLabel.textContent = pct + '%'; }
     }
 
-    function onMove(e){
-      if(!dragging) return;
-      const x = (e.touches?.[0]?.clientX ?? e.clientX);
-      setSplitFromClientX(x);
+    function setTick(pill){
+      pill.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6L9 17l-5-5" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      pill.setAttribute('aria-label','Completed');
+      pill.parentElement?.parentElement?.classList.add('completed');
+    }
+    function setMinutes(pill){
+      pill.textContent = pill.dataset.minutes || '';
+      pill.setAttribute('aria-label','Not completed');
+    }
+    function toggle(it){
+      const pill = it.querySelector('.pill');
+      if(!pill) return;
+      const isDone = it.classList.toggle('completed');
+      if(isDone){ setTick(pill); } else { setMinutes(pill); }
+      updateProgress();
     }
 
-    resizer?.addEventListener('pointerdown', (e)=>{
-      if(window.matchMedia('(max-width:760px)').matches) return; // no resize on mobile
-      dragging = true;
-      document.body.classList.add('resizing');
-      resizer.setPointerCapture(e.pointerId);
-      e.preventDefault();
-    });
-    resizer?.addEventListener('pointermove', onMove);
-    resizer?.addEventListener('pointerup', ()=>{ dragging = false; document.body.classList.remove('resizing'); });
-    window.addEventListener('resize', ()=>{ /* responsive var persists */ });
-
-    // -------- Self tests (non-blocking) --------
-    try{ console.assert(document.querySelectorAll('.content').length === 1, 'Content section exists'); }catch(_){ }
-    try{ console.assert(!!document.getElementById('splitIframe'), 'Split iframe present'); }catch(_){ }
-    try{ go(idx); }catch(e){ console.error('go() failed', e); }
+    updateProgress();
   })();
-  </script>
+</script>
 </body>
 </html>
