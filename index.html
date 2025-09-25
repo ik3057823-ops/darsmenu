@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lesson 1: Retrieval Practice and Its Importance</title>
+  <style>
+    :root{
+      --text:#111;
+      --muted:#5f6368;
+      --border:#e6e6e6;
+      --bg:#ffffff;            /* user preference: white background */
+      --panel:#ffffff;
+      --soft:#fbf8f5;          /* soft section background */
+      --pill:#f3f4f6;
+      --accent:#111;
+      --radius:18px;
+      --shadow:0 10px 25px rgba(0,0,0,.06);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font:16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:var(--bg);
+    }
+
+    .wrap{
+      max-width: 860px;
+      margin: 48px auto 80px;
+      padding: 0 24px;
+    }
+
+    /* Hero card */
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 0;
+      background:var(--panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      border:1px solid var(--border);
+    }
+    .hero-left{padding:52px 56px}
+    h1{
+      margin:0 0 6px;
+      font-size: clamp(26px, 4.2vw, 40px);
+      line-height:1.1;
+      letter-spacing:-.01em;
+    }
+    .hero-right{
+      min-height:220px;
+      background:
+        radial-gradient(#f2c7b2 22%, transparent 24%) 0 0/120px 120px,
+        radial-gradient(#f2c7b2 22%, transparent 24%) 60px 60px/120px 120px,
+        radial-gradient(#b9dfe6 22%, transparent 24%) 0 60px/120px 120px,
+        radial-gradient(#b9dfe6 22%, transparent 24%) 60px 0/120px 120px,
+        conic-gradient(from 45deg at 25% 25%, #f8e0b3 0 25%, transparent 0 100%),
+        conic-gradient(from -45deg at 75% 75%, #f8e0b3 0 25%, transparent 0 100%),
+        repeating-linear-gradient(90deg, transparent 0 118px, #ffffff 118px 120px);
+      opacity:.95;
+    }
+
+    /* Summary + share */
+    .summary{
+      background:var(--soft);
+      border-radius: var(--radius);
+      border:1px solid var(--border);
+      margin-top:22px;
+      padding:28px;
+    }
+    .share{
+      display:flex; align-items:center; gap:12px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px 14px;
+      margin-top:16px;
+      width:max-content;
+      box-shadow:0 3px 10px rgba(0,0,0,.03);
+      font-weight:500;
+      cursor:default;
+      user-select:none;
+    }
+    .share svg{width:18px;height:18px}
+
+    /* Learn section */
+    .learn{background:var(--soft); border:1px solid var(--border); border-radius: var(--radius); padding:30px; margin-top:18px}
+    .learn h2{font-size:18px; font-style:italic; margin:0 0 12px; color:var(--muted)}
+    .learn p{margin:0 0 18px}
+
+    .list{display:flex; flex-direction:column; gap:12px}
+
+    .item{
+      display:flex; align-items:center; justify-content:space-between;
+      background:#fff; border:1px solid var(--border);
+      border-radius:14px; padding:14px 16px; box-shadow:0 3px 10px rgba(0,0,0,.03);
+    }
+    .left{display:flex; align-items:center; gap:12px}
+    .icon{
+      width:36px; height:36px; border-radius:10px; background:var(--pill);
+      display:grid; place-items:center; border:1px solid var(--border);
+    }
+    .title{font-weight:600}
+
+    .pill{font-size:14px; background:var(--pill); padding:6px 10px; border:1px solid var(--border); border-radius:999px; white-space:nowrap}
+
+    @media (max-width: 760px){
+      .hero{grid-template-columns:1fr}
+      .hero-right{order:-1; min-height:160px}
+      .hero-left{padding:32px 26px}
+    }
+      /* Start button */
+    .start{display:inline-flex;align-items:center;gap:12px;background:var(--accent);color:#fff;border:1px solid var(--accent);border-radius:12px;padding:12px 18px;margin-top:16px;box-shadow:0 3px 10px rgba(0,0,0,.08);font-weight:600;cursor:pointer}
+    .start svg{width:18px;height:18px}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="lesson-title">
+      <div class="hero-left">
+        <h1 id="lesson-title">Lesson 1: Retrieval<br/>Practice and Its<br/>Importance</h1>
+      </div>
+      <div class="hero-right" aria-hidden="true"></div>
+    </section>
+
+    <!-- Summary & Share -->
+    <section class="summary">
+      <p>
+        Retrieval practice is a powerful learning strategy where learners actively recall information from memory, significantly enhancing retention and transfer, making it a crucial tool for instructional designers to optimize educational outcomes.
+      </p>
+      <button class="start" type="button" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})" aria-label="Start lesson and jump to menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
+        <span>Start</span>
+      </button>
+    </section>
+
+    <!-- Learn -->
+    <section id="menu" class="learn">
+      <h2>Learn</h2>
+      <p>Start exploring retrieval practice to boost learning power now.</p>
+
+      <div class="list" role="list">
+        <!-- Item 1 -->
+        <div class="item" role="listitem">
+          <div class="left">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V4.5A2.5 2.5 0 0 1 6.5 2h7A2.5 2.5 0 0 1 16 4.5v15a.5.5 0 0 1-.77.42L10 16.5l-5.23 3.42A.5.5 0 0 1 4 19.5z"/></svg>
+            </div>
+            <div class="title">Deep Dive</div>
+          </div>
+          <div class="pill" aria-label="ten minute read">10 min read</div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="item" role="listitem">
+          <div class="left">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><path d="M3 7v13l12 2V9z"/></svg>
+            </div>
+            <div class="title">Podcast Episode</div>
+          </div>
+          <div class="pill" aria-label="seven minute listen">7 min listen</div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="item" role="listitem">
+          <div class="left">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20l9-5-9-5-9 5 9 5z"/><path d="M12 12l9-5-9-5-9 5 9 5z"/></svg>
+            </div>
+            <div class="title">Key Takeaways</div>
+          </div>
+          <div class="pill" aria-label="two minute read">2 min read</div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
