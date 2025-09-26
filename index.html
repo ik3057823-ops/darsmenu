@@ -8,7 +8,7 @@
     :root{
       --font: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       --text:#111; --muted:#5f6368; --border:#e6e6e6; --bg:#ffffff;
-      --split-left: 30vw; /* default split (menu) width */
+      --split-left: 30vw; /* default split (menu) width on desktop */
     }
 
     /* Base */
@@ -73,23 +73,14 @@
     :focus-visible{outline:2px solid var(--text); outline-offset:2px}
     .menu-btn:focus-visible,.iconbtn:focus-visible{outline:2px solid var(--text); outline-offset:2px}
 
-    /* Mobile */
+    /* Mobile: menu covers the whole screen when open */
     @media (max-width:760px){
       .wrap,.content{padding:0 16px}
       .iconbtn{width:64px; height:64px; border-radius:14px}
       .iconbtn svg{width:28px; height:28px}
-      /* Mobile behavior: menu takes the whole screen when open */
       body.split-open .split-left{width:100vw; height:100vh; left:0; top:0; right:0; bottom:0}
       body.split-open .viewport{display:none}
       body.split-open .pv-nav{display:none}
-      .split-resizer{display:none !important}
-    }
-      .iconbtn{width:64px; height:64px; border-radius:14px}
-      .iconbtn svg{width:28px; height:28px}
-      /* Stack 50/50 vertically on mobile for usability */
-      body.split-open .split-left{width:100vw; height:50vh}
-      body.split-open .viewport{left:0; top:50vh; right:0; bottom:0}
-      body.split-open .pv-nav{left:50%; transform:translateX(-50%)}
       .split-resizer{display:none !important}
     }
   </style>
@@ -229,9 +220,11 @@
     overlay?.addEventListener('click', closeLB);
     document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLB(); });
 
-    // ---- 30/70 split toggle ----
+    // ---- Split toggle ----
     const menuBtn = document.getElementById('menuBtn');
     const splitClose = document.getElementById('splitClose');
+    const resizer = document.getElementById('splitResizer');
+
     menuBtn?.addEventListener('click', (e)=>{
       e.preventDefault();
       document.body.classList.add('split-open');
@@ -241,9 +234,9 @@
         document.documentElement.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
       }
-      // try to load menu, if blocked fallback to opening in a new tab and closing split
+      // Attempt to load; if blocked, open new tab and close split
       const iframe = document.getElementById('splitIframe');
-      let failedTimer = setTimeout(()=>{
+      let fallbackTimer = setTimeout(()=>{
         try{
           if(iframe && (!iframe.contentDocument || iframe.contentWindow.location.href === 'about:blank')){ throw new Error('blocked'); }
         }catch(_){
@@ -254,22 +247,7 @@
           document.body.style.overflow = '';
         }
       }, 1400);
-      iframe?.addEventListener('load', ()=>{ clearTimeout(failedTimer); }, { once:true });
-    });
-      document.body.classList.add('split-open');
-      menuBtn.setAttribute('aria-expanded','true');
-      // try to load menu, if blocked fallback to opening in a new tab and closing split
-      const iframe = document.getElementById('splitIframe');
-      let failedTimer = setTimeout(()=>{
-        try{
-          if(iframe && (!iframe.contentDocument || iframe.contentWindow.location.href === 'about:blank')){ throw new Error('blocked'); }
-        }catch(_){
-          window.open(MENU_URL, '_blank', 'noopener');
-          document.body.classList.remove('split-open');
-          menuBtn?.setAttribute('aria-expanded','false');
-        }
-      }, 1400);
-      iframe?.addEventListener('load', ()=>{ clearTimeout(failedTimer); }, { once:true });
+      iframe?.addEventListener('load', ()=>{ clearTimeout(fallbackTimer); }, { once:true });
     });
 
     splitClose?.addEventListener('click', ()=>{
@@ -278,26 +256,20 @@
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     });
-      menuBtn?.setAttribute('aria-expanded','false');
-    });
 
     // ---- Resizable split (desktop) ----
-    const resizer = document.getElementById('splitResizer');
     let dragging = false;
-
     function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
     function setSplitFromClientX(x){
       const vw = Math.max(1, window.innerWidth);
       const pct = clamp((x / vw) * 100, 20, 60); // allow 20%..60%
       document.documentElement.style.setProperty('--split-left', pct + 'vw');
     }
-
     function onMove(e){
       if(!dragging) return;
       const x = (e.touches?.[0]?.clientX ?? e.clientX);
       setSplitFromClientX(x);
     }
-
     resizer?.addEventListener('pointerdown', (e)=>{
       if(window.matchMedia('(max-width:760px)').matches) return; // no resize on mobile
       dragging = true;
